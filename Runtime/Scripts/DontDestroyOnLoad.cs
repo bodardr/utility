@@ -2,7 +2,7 @@
 
 namespace Bodardr.UI.Runtime
 {
-    public class DontDestroyOnLoad<T> : MonoBehaviour
+    public class DontDestroyOnLoad<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T instance;
 
@@ -10,7 +10,7 @@ namespace Bodardr.UI.Runtime
         {
             get
             {
-                if (instance == null)
+                if (!instance)
                     CreateInstance();
 
                 return instance;

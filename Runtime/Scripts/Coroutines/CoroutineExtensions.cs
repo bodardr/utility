@@ -27,4 +27,9 @@ public static class CoroutineExtensions
         yield return coroutine;
         yield return new WaitForSeconds(secondsToWait);
     }
+    
+    public static IEnumerator Wait(float secondsToWait)
+    {
+        yield return new WaitForSeconds(secondsToWait);
+    }
 }
