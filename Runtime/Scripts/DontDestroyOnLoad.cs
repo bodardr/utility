@@ -26,7 +26,8 @@ namespace Bodardr.UI.Runtime
 
         private void OnDestroy()
         {
-            instance = default;
+            if (instance == this)
+                instance = null;
         }
     }
 }
