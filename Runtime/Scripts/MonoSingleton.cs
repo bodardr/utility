@@ -13,7 +13,7 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
             Instance = this as T;
     }
 
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
