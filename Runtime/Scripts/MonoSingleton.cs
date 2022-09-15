@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
