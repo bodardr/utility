@@ -45,4 +45,10 @@ public static class CoroutineExtensions
         foreach (var i in instructions)
             yield return i;
     }
+
+    public static IEnumerator WaitForAll(this IEnumerable<SmartCoroutine> instructions)
+    {
+        foreach (var i in instructions)
+            yield return i;
+    }
 }
