@@ -67,9 +67,17 @@ public class SmartCoroutine
     {
         IsRunning = true;
 
-
         yield return coroutine();
 
         IsRunning = false;
+    }
+}
+
+public static class SmartCoroutineExtensions
+{
+    public static SmartCoroutine ToSmartCoroutine(this IEnumerator enumerator, MonoBehaviour handler,
+        bool swapToCoroutinerOnDisable = true)
+    {
+        return new SmartCoroutine(handler, () => enumerator, swapToCoroutinerOnDisable);
     }
 }

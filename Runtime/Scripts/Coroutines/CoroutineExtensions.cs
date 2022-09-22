@@ -49,6 +49,6 @@ public static class CoroutineExtensions
     public static IEnumerator WaitForAll(this IEnumerable<SmartCoroutine> instructions)
     {
         foreach (var i in instructions)
-            yield return i;
+            yield return new WaitUntil(() => !i.IsRunning);
     }
 }
