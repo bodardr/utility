@@ -17,17 +17,17 @@ public class SmartCoroutine
     /// </summary>
     private Coroutine internalCoroutine;
 
-    public bool IsRunning { get; private set; }
-    public MonoBehaviour Handler { get; set; }
-
-    public static implicit operator bool(SmartCoroutine smartCoroutine) => smartCoroutine.IsRunning;
-
     public SmartCoroutine(MonoBehaviour handler, Func<IEnumerator> coroutine, bool swapToCoroutinerOnDisabled = true)
     {
         Handler = handler;
         this.coroutine = coroutine;
         this.swapToCoroutinerOnDisabled = swapToCoroutinerOnDisabled;
     }
+
+    public bool IsRunning { get; private set; }
+    public MonoBehaviour Handler { get; set; }
+
+    public static implicit operator bool(SmartCoroutine smartCoroutine) => smartCoroutine.IsRunning;
 
     public void Start()
     {
@@ -50,13 +50,14 @@ public class SmartCoroutine
     }
 
     public void Stop()
-    { 
+    {
         if (Handler)
             Handler.StopCoroutine(internalCoroutine);
         else if (swapToCoroutinerOnDisabled)
             Coroutiner.Instance.StopCoroutine(internalCoroutine);
         else
-            Debug.LogError("Coroutine couldn't be stopped. There is no Handler nor Coroutiner. Idk how you got there honestly, good job.");
+            Debug.LogError(
+                "Coroutine couldn't be stopped. There is no Handler nor Coroutiner. Idk how you got there honestly, good job.");
 
         internalCoroutine = null;
         IsRunning = false;
@@ -66,7 +67,7 @@ public class SmartCoroutine
     {
         IsRunning = true;
 
-        
+
         yield return coroutine();
 
         IsRunning = false;

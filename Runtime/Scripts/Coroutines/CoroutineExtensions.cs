@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class CoroutineExtensions
@@ -27,9 +28,21 @@ public static class CoroutineExtensions
         yield return coroutine;
         yield return new WaitForSeconds(secondsToWait);
     }
-    
+
     public static IEnumerator Wait(float secondsToWait)
     {
         yield return new WaitForSeconds(secondsToWait);
+    }
+
+    public static IEnumerator WaitForAll(this IEnumerable<YieldInstruction> instructions)
+    {
+        foreach (var i in instructions)
+            yield return i;
+    }
+
+    public static IEnumerator WaitForAll(this IEnumerable<IEnumerator> instructions)
+    {
+        foreach (var i in instructions)
+            yield return i;
     }
 }
