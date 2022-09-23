@@ -1,13 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Bodardr.Utility.Runtime
 {
     public static class ListExtensions
     {
-        public static int RandomIndex(this IList list)
+        
+        public static T RandomItem<T>(this IList<T> list)
         {
-            return Random.Range(0, list.Count);
+            return list[Random.Range(0, list.Count)];
         }
+        
+        
     }
 }
