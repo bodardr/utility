@@ -2,7 +2,13 @@
 
 public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    public static T Instance { get; private set; }
+    private static T instance;
+
+    public static T Instance
+    {
+        get => instance ??= FindObjectOfType<T>();
+        private set => instance = value;
+    }
 
     protected virtual void Awake()
     {
