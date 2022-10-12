@@ -6,16 +6,8 @@ public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     public static T Instance
     {
-        get => instance ??= FindObjectOfType<T>();
+        get => instance ? instance : instance = FindObjectOfType<T>(true);
         private set => instance = value;
-    }
-
-    protected virtual void Awake()
-    {
-        if (Instance)
-            Destroy(this);
-        else
-            Instance = this as T;
     }
 
     protected virtual void OnDestroy()

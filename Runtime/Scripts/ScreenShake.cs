@@ -7,18 +7,18 @@ public class ScreenShake : MonoSingleton<ScreenShake>
 {
     private CinemachineImpulseSource impulseSource;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
-    
+
     public static void Shake(float intensity = 1)
     {
         var instance = Instance;
-        instance.impulseSource.GenerateImpulseAt(instance.transform.position, new Vector3(intensity, intensity, intensity));
+        instance.impulseSource.GenerateImpulseAt(instance.transform.position,
+            new Vector3(intensity, intensity, intensity));
     }
-    
+
     public static void Shake(Vector3 intensity)
     {
         var instance = Instance;
