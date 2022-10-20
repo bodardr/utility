@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 namespace Bodardr.Utility.Runtime
 {
-    public static class EnumExtensions
+    public static class EnumUtility
     {
         public static TEnum RandomEnumValue<TEnum>() where TEnum : Enum
         {

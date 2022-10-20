@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 namespace Bodardr.Utility.Runtime
 {
-    public static class ComponentExtensions
+    public static class ComponentUtility
     {
         /// <summary>
         /// Taken inspiration from : https://answers.unity.com/questions/863509/how-can-i-find-all-objects-that-have-a-script-that.html

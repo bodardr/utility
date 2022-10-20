@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public static class MathExtensions
+public static class MathUtility
 {
     public static float Remap(float value, float minA, float maxA, float minB, float maxB)
     {
