@@ -20,10 +20,10 @@ public class SerializableAnimatorStateInfo
     private float absoluteLength;
 
     [SerializeField]
-    private float speed;
+    private bool empty;
 
     [SerializeField]
-    private float speedMultiplier;
+    private float speed;
 
     [SerializeField]
     private int tagHash;
@@ -35,12 +35,15 @@ public class SerializableAnimatorStateInfo
     public SerializableAnimatorStateInfo(AnimatorState state, Motion motion, int layerIndex)
     {
         this.layerIndex = layerIndex;
-        speedMultiplier = state.speed;
+
+        speed = state.speed;
+
         stateNameHash = state.nameHash;
         stateName = state.name;
         tagHash = Animator.StringToHash(state.tag);
 
-        absoluteLength = motion ? motion.averageDuration / speedMultiplier : 0;
+        empty = !motion || ((AnimationClip)motion).empty;
+        absoluteLength = empty ? 0 : motion.averageDuration / speed;
         loops = motion && motion.isLooping;
     }
 #endif
@@ -79,4 +82,9 @@ public class SerializableAnimatorStateInfo
     ///   <para>Is the state looping.</para>
     /// </summary>
     public bool Loops => loops;
+
+    /// <summary>
+    /// Is this state empty?
+    /// </summary>
+    public bool Empty => empty;
 }

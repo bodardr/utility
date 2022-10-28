@@ -39,11 +39,7 @@ public class AnimatorStateCacheReference : MonoBehaviour
         if (!Animator || !Animator.runtimeAnimatorController)
             return;
 
-        if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator.runtimeAnimatorController, out var guid,
-                out long _))
-            return;
-
-        if (!stateCache || !guid.Equals(stateCache.AnimatorControllerGUID))
+        if (!stateCache || animator.runtimeAnimatorController != stateCache.AnimatorController)
         {
             stateCache = AnimatorStateCacheCompiler.GetOrCreateStateCache(animator.runtimeAnimatorController);
             EditorUtility.SetDirty(this);

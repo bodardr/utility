@@ -1,11 +1,13 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Debug = UnityEngine.Debug;
 
 [InitializeOnLoad]
 public class AnimatorStateCacheCompiler
@@ -59,21 +61,21 @@ public class AnimatorStateCacheCompiler
 
     public static AnimatorStateCache GetOrCreateStateCache(RuntimeAnimatorController animator)
     {
-        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator, out var animatorGUID, out long _);
-
         if (!AssetDatabase.IsValidFolder(STATE_CACHE_INFO_PATH))
             AssetDatabase.CreateFolder("Assets/", nameof(AnimatorStateCache) + "s");
 
         var stateCaches = AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH).ToList();
-        return stateCaches.FirstOrDefault(x => x.name == animatorGUID) ?? CreateStateCache(animator.name, animatorGUID);
+        return stateCaches.FirstOrDefault(x => x.AnimatorController == animator) ?? CreateStateCache(animator);
     }
 
-    private static AnimatorStateCache CreateStateCache(string animatorName, string animatorGUID)
+    private static AnimatorStateCache CreateStateCache(RuntimeAnimatorController animator)
     {
-        var stateCache = ScriptableObject.CreateInstance<AnimatorStateCache>();
-        stateCache.AnimatorControllerGUID = animatorGUID;
+        AssetDatabase.TryGetGUIDAndLocalFileIdentifier(animator, out var guid, out long _);
 
-        AssetDatabase.CreateAsset(stateCache, $"{STATE_CACHE_INFO_PATH}/{animatorName} ({animatorGUID[..4]}).asset");
+        var stateCache = ScriptableObject.CreateInstance<AnimatorStateCache>();
+        stateCache.AnimatorController = animator;
+
+        AssetDatabase.CreateAsset(stateCache, $"{STATE_CACHE_INFO_PATH}/{animator.name} ({guid[..4]}).asset");
         AssetDatabase.SaveAssets();
 
         return stateCache;
@@ -86,25 +88,36 @@ public class AnimatorStateCacheCompiler
 
         var assets = AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH);
 
-        foreach (var asset in assets)
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        foreach (var stateCache in assets)
         {
-            var controllerAsset =
-                AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
-                    AssetDatabase.GUIDToAssetPath(asset.AnimatorControllerGUID));
-
-            AnimatorController animatorController = null;
-
-            asset.SerializedStates.Clear();
-            if (controllerAsset is AnimatorOverrideController overrideController)
-                FillStateCache(overrideController, asset);
-            else
-                FillStateCache(animatorController, asset);
+            SerializeStateCache(stateCache);
+            new SerializedObject(stateCache).ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(stateCache);
         }
+
+        AssetDatabase.SaveAssets();
+
+        stopwatch.Stop();
+
+        Debug.Log($"Compiling State Caches Finished. Time elapsed <b>{stopwatch.ElapsedMilliseconds}ms</b>");
+    }
+
+    private static void SerializeStateCache(AnimatorStateCache stateCache)
+    {
+        var controllerAsset = stateCache.AnimatorController;
+
+        stateCache.SerializedStates.Clear();
+        if (controllerAsset is AnimatorOverrideController overrideController)
+            FillStateCache(overrideController, stateCache);
+        else
+            FillStateCache((AnimatorController)controllerAsset, stateCache);
     }
 
     private static void FillStateCache(AnimatorOverrideController overrideController, AnimatorStateCache asset)
     {
-        var originalController = ((AnimatorController)overrideController.runtimeAnimatorController);
+        var originalController = (AnimatorController)overrideController.runtimeAnimatorController;
 
         List<KeyValuePair<AnimationClip, AnimationClip>> overrides =
             new List<KeyValuePair<AnimationClip, AnimationClip>>();
@@ -125,7 +138,7 @@ public class AnimatorStateCacheCompiler
                     overrideClip ? overrideClip : initialMotion, i));
             }
 
-            asset.SerializedStates.Add(layer.name, statesInfos);
+            asset.SerializedStates.Add(layer.name, statesInfos.ToArray());
         }
     }
 
@@ -140,7 +153,7 @@ public class AnimatorStateCacheCompiler
                 statesInfos.Add(new SerializableAnimatorStateInfo(state.state,
                     animatorController.GetStateEffectiveMotion(state.state, i), i));
 
-            asset.SerializedStates.Add(layer.name, statesInfos);
+            asset.SerializedStates.Add(layer.name, statesInfos.ToArray());
         }
     }
 
@@ -149,11 +162,12 @@ public class AnimatorStateCacheCompiler
         if (!AnimatorStateCacheSettings.Instance.AddStateCacheToAnimatorsAutomatically)
             return;
 
-        if (component is Animator anim)
-        {
-            var stateCacheReference = component.gameObject.AddComponent<AnimatorStateCacheReference>();
-            stateCacheReference.Animator = anim;
-        }
+        if (component is not Animator anim)
+            return;
+
+
+        var stateCacheReference = component.gameObject.AddComponent<AnimatorStateCacheReference>();
+        stateCacheReference.Animator = anim;
     }
 
     private static void OnQuit()
@@ -162,5 +176,20 @@ public class AnimatorStateCacheCompiler
         ObjectFactory.componentWasAdded -= OnComponentAdded;
         EditorApplication.quitting -= OnQuit;
     }
+
+    /*[MenuItem("Tools/ANIMATOR CACHE THING")]
+    public static void AnimatorCacheThing()
+    {
+        foreach (var stateCache in AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH))
+        {
+            stateCache.AnimatorController =
+                AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                    AssetDatabase.GUIDToAssetPath(stateCache.AnimatorControllerGUID));
+            new SerializedObject(stateCache).ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(stateCache);
+        }
+        
+        AssetDatabase.SaveAssets();
+    }*/
 }
 #endif

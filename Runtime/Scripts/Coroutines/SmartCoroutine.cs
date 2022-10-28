@@ -45,7 +45,9 @@ public class SmartCoroutine
 
     public void Restart()
     {
-        Stop();
+        if (IsRunning)
+            Stop();
+
         Start();
     }
 

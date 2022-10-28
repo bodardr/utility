@@ -33,9 +33,6 @@ namespace Bodardr.Utility.Editor
                 }
             };
 
-            var anim = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
-                AssetDatabase.GUIDToAssetPath(((AnimatorStateCache)target).AnimatorControllerGUID));
-
             stateInfo.Add(new Label($"This state cache is assigned to ")
                 { style = { unityTextAlign = new StyleEnum<TextAnchor>(TextAnchor.MiddleLeft) } });
 
@@ -43,7 +40,7 @@ namespace Bodardr.Utility.Editor
             {
                 focusable = false,
                 delegatesFocus = false,
-                value = anim,
+                value = ((AnimatorStateCache)target).AnimatorController,
                 style =
                 {
                     height = 18,

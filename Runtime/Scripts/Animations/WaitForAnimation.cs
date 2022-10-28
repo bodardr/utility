@@ -5,40 +5,46 @@ namespace Bodardr.Utility.Runtime
     public class WaitForAnimation : CustomYieldInstruction
     {
         private readonly Animator animator;
-
         private readonly int layerIndex;
         private readonly int stateHash;
         private readonly bool stateMatches;
+        private readonly float timeout;
+
+        private readonly WaitStrategy waitStrategy;
 
         private bool animationPlaying;
 
-        private float currentTimeout = 0;
-        private float maxTimeout = 0;
+        private float currentTimeout;
         private int nextStateHash;
 
         public WaitForAnimation(Animator animator, SerializableAnimatorStateInfo serializedStateInfo,
-            float maxTimeout = 0) : this(animator, serializedStateInfo.StateNameHash, serializedStateInfo.LayerIndex,
-            maxTimeout)
+            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition, float timeout = 0) : this(animator,
+            serializedStateInfo.StateNameHash, serializedStateInfo.LayerIndex, waitStrategy, timeout)
         {
         }
 
-        public WaitForAnimation(Animator animator, AnimatorStateInfo stateInfo, int layerIndex, float maxTimeout = 0) :
-            this(animator,
-                stateInfo.shortNameHash, layerIndex, maxTimeout)
+        public WaitForAnimation(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition, float timeout = 0) :
+            this(animator, stateInfo.shortNameHash, layerIndex, waitStrategy, timeout)
         {
         }
 
-        public WaitForAnimation(Animator animator, string stateName, int layerIndex, float maxTimeout = 0) : this(
-            animator,
-            Animator.StringToHash(stateName), layerIndex, maxTimeout)
+        public WaitForAnimation(Animator animator, string stateName, int layerIndex,
+            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition,
+            float timeout = 0) : this(animator,
+            Animator.StringToHash(stateName), layerIndex, waitStrategy,
+            timeout)
         {
         }
 
-        public WaitForAnimation(Animator animator, int stateNameHash, int layerIndex, float maxTimeout = 0)
+        public WaitForAnimation(Animator animator, int stateNameHash, int layerIndex,
+            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition,
+            float timeout = 0)
         {
             this.layerIndex = layerIndex;
             this.animator = animator;
-            this.maxTimeout = maxTimeout;
+            this.timeout = timeout;
+            this.waitStrategy = waitStrategy;
 
             stateHash = stateNameHash;
 
@@ -52,7 +58,9 @@ namespace Bodardr.Utility.Runtime
                 if (!animationPlaying)
                     return UpdateAnimationPlayingStatus();
 
-                //Once the animation plays, we wait for the next state to change, indicating a transition.
+                if (waitStrategy == WaitStrategy.TillEndOfTransition)
+                    return animator && animator.GetCurrentAnimatorStateInfo(layerIndex).shortNameHash == stateHash;
+
                 return animator && animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash == nextStateHash;
             }
         }
@@ -65,15 +73,23 @@ namespace Bodardr.Utility.Runtime
             if (animator.GetCurrentAnimatorStateInfo(layerIndex).shortNameHash == stateHash)
             {
                 animationPlaying = true;
-                nextStateHash = animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash;
+
+                if (waitStrategy == WaitStrategy.TillStartOfTransition)
+                    nextStateHash = animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash;
                 return true;
             }
 
-            if (maxTimeout <= 0)
+            if (timeout <= 0)
                 return true;
 
             currentTimeout += Time.deltaTime;
-            return maxTimeout < currentTimeout;
+            return timeout < currentTimeout;
         }
+    }
+
+    public enum WaitStrategy
+    {
+        TillStartOfTransition,
+        TillEndOfTransition
     }
 }

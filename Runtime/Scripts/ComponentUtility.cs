@@ -11,9 +11,9 @@ namespace Bodardr.Utility.Runtime
         /// <param name="includeInactive"></param>
         /// <typeparam name="T">The type of component to fetch</typeparam>
         /// <returns>All components across all scenes, containing this class or interface type.</returns>
-        public static List<T> FindComponentsInAllActiveScenes<T>(bool includeInactive = true)
+        public static List<T> FindComponentsInAllScenes<T>(bool includeInactive = true)
         {
-            List<T> components = new List<T>();
+            var components = new List<T>();
 
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -26,7 +26,7 @@ namespace Bodardr.Utility.Runtime
 
         public static List<T> FindComponentsInActiveScene<T>(bool includeInactive = true)
         {
-            List<T> components = new List<T>();
+            var components = new List<T>();
 
             foreach (var rootGO in SceneManager.GetActiveScene().GetRootGameObjects())
                 components.AddRange(rootGO.GetComponentsInChildren<T>(includeInactive));
@@ -36,7 +36,7 @@ namespace Bodardr.Utility.Runtime
 
         public static List<T> FindComponentsInScene<T>(Scene scene, bool includeInactive = true)
         {
-            List<T> components = new List<T>();
+            var components = new List<T>();
 
             foreach (var rootGO in scene.GetRootGameObjects())
                 components.AddRange(rootGO.GetComponentsInChildren<T>(includeInactive));

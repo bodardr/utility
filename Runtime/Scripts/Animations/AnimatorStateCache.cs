@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AnimatorStateCache : ScriptableObject, ISerializationCallbackReceiver
 {
     [SerializeField]
-    private string animatorControllerGUID;
+    private RuntimeAnimatorController animatorController;
 
     [HideInInspector]
     [SerializeField]
@@ -14,20 +16,23 @@ public class AnimatorStateCache : ScriptableObject, ISerializationCallbackReceiv
     [SerializeField]
     private string[] values;
 
-    private Dictionary<string, List<SerializableAnimatorStateInfo>> serializedStates = new();
+    private Dictionary<string, SerializableAnimatorStateInfo[]> serializedStates = new();
 
-    public string AnimatorControllerGUID
+    public RuntimeAnimatorController AnimatorController
     {
-        get => animatorControllerGUID;
-        set => animatorControllerGUID = value;
+        get => animatorController;
+        set => animatorController = value;
     }
 
-    public Dictionary<string, List<SerializableAnimatorStateInfo>> SerializedStates => serializedStates;
+    public Dictionary<string, SerializableAnimatorStateInfo[]> SerializedStates => serializedStates;
 
-    public List<SerializableAnimatorStateInfo> this[string key] => SerializedStates[key];
+    public SerializableAnimatorStateInfo[] this[string key] => SerializedStates[key];
 
     public void OnBeforeSerialize() => serializedStates?.Serialize(out keys, out values);
 
     public void OnAfterDeserialize() => serializedStates =
-        DictionaryExtensions.Deserialize<string, List<SerializableAnimatorStateInfo>>(keys, values);
+        DictionaryExtensions.Deserialize<string, SerializableAnimatorStateInfo[]>(keys, values);
+
+    public SerializableAnimatorStateInfo FindState(Func<SerializableAnimatorStateInfo, bool> predicate) =>
+        SerializedStates.SelectMany(x => x.Value).First(predicate);
 }
