@@ -51,7 +51,7 @@ public class CollectionItemButton : MonoBehaviour
                 var tr = transform;
 
                 for (int i = 0; i < parentRecursionLevel; i++)
-                    tr = transform.parent;
+                    tr = tr.transform.parent;
 
                 index = tr.GetSiblingIndex();
                 break;

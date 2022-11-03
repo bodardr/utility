@@ -8,8 +8,8 @@ using UnityEditor;
 #endif
 public class MouseToViewportProcessor : InputProcessor<Vector2>
 {
-    private readonly Vector2 half = new Vector2(0.5f, 0.5f);
-    private readonly Vector2 display = new Vector2(Display.main.systemWidth, Display.main.systemHeight);
+    private static readonly Vector2 half = new(0.5f, 0.5f);
+    private static Vector2 Resolution => new(Display.main.systemWidth, Display.main.systemHeight);
 
 #if UNITY_EDITOR
     static MouseToViewportProcessor()
@@ -26,6 +26,6 @@ public class MouseToViewportProcessor : InputProcessor<Vector2>
 
     public override Vector2 Process(Vector2 value, InputControl control)
     {
-        return value / display - half;
+        return value / Resolution - half;
     }
 }
