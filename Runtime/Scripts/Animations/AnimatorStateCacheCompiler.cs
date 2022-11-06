@@ -83,7 +83,7 @@ public class AnimatorStateCacheCompiler
 
     private static void CompileStateCaches(PlayModeStateChange obj)
     {
-        if (obj != PlayModeStateChange.ExitingEditMode)
+        if (obj != PlayModeStateChange.ExitingEditMode || !AssetDatabase.IsValidFolder(STATE_CACHE_INFO_PATH))
             return;
 
         var assets = AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH);
