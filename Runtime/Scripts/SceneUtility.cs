@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-public class SceneUtility : MonoBehaviour
+namespace Bodardr.Utility.Runtime
 {
-    public void LoadScene(string sceneName)
+    public class SceneUtility : MonoBehaviour
     {
-        TransitionHandler.Instance.ChangeScene(sceneName);
+        public void LoadScene(string sceneName)
+        {
+            TransitionHandler.Instance.ChangeScene(sceneName);
+        }
     }
 }

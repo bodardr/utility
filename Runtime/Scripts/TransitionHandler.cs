@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
-using Bodardr.UI.Runtime;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
+namespace Bodardr.Utility.Runtime
+{
     public class TransitionHandler : DontDestroyOnLoad<TransitionHandler>
     {
         private const string TRANSITION_CANVAS = "TRANSITION CANVAS";
@@ -51,3 +51,4 @@ using UnityEngine.UI;
                 .From(1).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
         }
     }
+}

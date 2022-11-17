@@ -1,52 +1,56 @@
 ﻿using System.Collections;
-using Bodardr.UI.Runtime;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TransitionCanvas : DontDestroyOnLoad<TransitionCanvas>
+namespace Bodardr.Utility.Runtime
 {
-    private const string TRANSITION_CANVAS = "TRANSITION CANVAS";
-    private static Image transitionImage;
-
-    private void Awake()
+    public class TransitionCanvas : DontDestroyOnLoad<TransitionCanvas>
     {
-        gameObject.name = TRANSITION_CANVAS;
+        private const string TRANSITION_CANVAS = "TRANSITION CANVAS";
+        private static Image transitionImage;
 
-        var canvas = gameObject.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = 99;
+        private void Awake()
+        {
+            gameObject.name = TRANSITION_CANVAS;
 
-        gameObject.AddComponent<GraphicRaycaster>();
+            var canvas = gameObject.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = 99;
 
-        var image = Instantiate(new GameObject("Image", typeof(RectTransform), typeof(Image)), transform);
-        var rectTransform = image.GetComponent<RectTransform>();
+            gameObject.AddComponent<GraphicRaycaster>();
 
-        //Stretch
-        rectTransform.anchorMin = Vector2.zero;
-        rectTransform.anchorMax = Vector2.one;
-        rectTransform.sizeDelta = Vector2.zero;
+            var image = Instantiate(new GameObject("Image", typeof(RectTransform), typeof(Image)), transform);
+            var rectTransform = image.GetComponent<RectTransform>();
 
-        transitionImage = image.GetComponent<Image>();
-        transitionImage.color = Color.clear;
-        
-        gameObject.SetActive(false);
-    }
+            //Stretch
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.sizeDelta = Vector2.zero;
 
-    public static IEnumerator FadeOut(float duration = 1)
-    {
-        Instance.gameObject.SetActive(true);
-        
-        yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 1, duration)
-            .From(0).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
-    }
+            transitionImage = image.GetComponent<Image>();
+            transitionImage.color = Color.clear;
 
-    public static IEnumerator FadeIn(float duration = 1)
-    {
-        yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 0, duration)
-            .From(1).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
+            gameObject.SetActive(false);
+        }
 
-        Instance.gameObject.SetActive(false);
+        public static IEnumerator FadeOut(float duration = 1)
+        {
+            Instance.gameObject.SetActive(true);
+
+            yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 1,
+                    duration)
+                .From(0).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
+        }
+
+        public static IEnumerator FadeIn(float duration = 1)
+        {
+            yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 0,
+                    duration)
+                .From(1).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
+
+            Instance.gameObject.SetActive(false);
+        }
     }
 }

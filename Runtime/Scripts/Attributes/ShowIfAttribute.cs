@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Bodardr.UI.Runtime
+namespace Bodardr.Utility.Runtime
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ShowIfAttribute : PropertyAttribute

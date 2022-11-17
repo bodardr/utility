@@ -1,6 +1,7 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -8,6 +9,10 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
+
+#if HAS_PARRELSYNC
+using ParrelSync;
+#endif
 
 [InitializeOnLoad]
 public class AnimatorStateCacheCompiler
@@ -62,7 +67,7 @@ public class AnimatorStateCacheCompiler
     public static AnimatorStateCache GetOrCreateStateCache(RuntimeAnimatorController animator)
     {
         if (!AssetDatabase.IsValidFolder(STATE_CACHE_INFO_PATH))
-            AssetDatabase.CreateFolder("Assets/", nameof(AnimatorStateCache) + "s");
+            Directory.CreateDirectory($"{Application.dataPath}/{nameof(AnimatorStateCache)}s");
 
         var stateCaches = AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH).ToList();
         return stateCaches.FirstOrDefault(x => x.AnimatorController == animator) ?? CreateStateCache(animator);
@@ -85,6 +90,11 @@ public class AnimatorStateCacheCompiler
     {
         if (obj != PlayModeStateChange.ExitingEditMode || !AssetDatabase.IsValidFolder(STATE_CACHE_INFO_PATH))
             return;
+
+#if HAS_PARRELSYNC
+        if (ClonesManager.IsClone())
+            return;
+#endif
 
         var assets = AssetDatabaseUtility.LoadAssetsInFolder<AnimatorStateCache>(STATE_CACHE_INFO_PATH);
 

@@ -4,7 +4,9 @@
     "references": [
         "Unity.TextMeshPro",
         "Unity.InputSystem",
-        "Cinemachine"
+        "Cinemachine",
+        "Unity.RenderPipelines.Core.Runtime",
+		"ParrelSync"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -18,7 +20,12 @@
             "name": "com.unity.cinemachine",
             "expression": "1.0.0",
             "define": "HAS_CINEMACHINE"
-        }
+        },
+		{
+			"name": "com.veriorpies.parrelsync",
+            "expression": "1.5.0",
+            "define": "HAS_PARRELSYNC"
+		}
     ],
     "noEngineReferences": false
 }

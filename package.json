@@ -4,7 +4,9 @@
   "displayName": "Utility",
   "description": "Useful gamedev premade code and patterns",
   "unity": "2020.2",
-  "dependencies": {},
+  "dependencies": {
+    "com.unity.render-pipelines.core": "12.1.7"
+  },
   "author": {
     "name": "Roman B.",
     "email": "romain.bodard@videotron.ca"

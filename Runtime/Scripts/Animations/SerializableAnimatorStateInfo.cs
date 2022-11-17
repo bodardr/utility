@@ -29,22 +29,25 @@ public class SerializableAnimatorStateInfo
     private int tagHash;
 
     [SerializeField]
-    private bool loops;
+    private bool loops = true;
 
 #if UNITY_EDITOR
     public SerializableAnimatorStateInfo(AnimatorState state, Motion motion, int layerIndex)
     {
         this.layerIndex = layerIndex;
 
-        speed = state.speed;
-
         stateNameHash = state.nameHash;
         stateName = state.name;
         tagHash = Animator.StringToHash(state.tag);
 
+        if (motion is BlendTree)
+            return;
+        
+        speed = state.speed;
+
+        loops = motion && motion.isLooping;
         empty = !motion || ((AnimationClip)motion).empty;
         absoluteLength = empty ? 0 : motion.averageDuration / speed;
-        loops = motion && motion.isLooping;
     }
 #endif
 

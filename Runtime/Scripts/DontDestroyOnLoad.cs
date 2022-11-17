@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Bodardr.UI.Runtime
+namespace Bodardr.Utility.Runtime
 {
     /// <summary>
     /// Inherit this class for use in class singletons that are self-initialized

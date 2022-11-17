@@ -2,6 +2,7 @@
   "name": "com.bodardr.utility.editor",
   "rootNamespace": "Bodardr.Utility.Editor",
   "references": [
+    "Unity.InputSystem",
     "com.bodardr.utility.runtime"
   ],
   "includePlatforms": [

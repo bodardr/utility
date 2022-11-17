@@ -19,11 +19,7 @@ namespace Bodardr.Utility.Editor
             var hasValue = property.objectReferenceValue;
 
             if (hasValue)
-            {
-                animatorRef =
-                    AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
-                        AssetDatabase.GUIDToAssetPath(property.objectReferenceValue.name));
-            }
+                animatorRef = ((AnimatorStateCache)property.objectReferenceValue).AnimatorController;
 
             animatorRef =
                 (AnimatorController)EditorGUI.ObjectField(position, property.displayName, animatorRef,

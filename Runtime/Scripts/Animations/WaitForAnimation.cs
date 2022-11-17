@@ -11,11 +11,29 @@ namespace Bodardr.Utility.Runtime
         private readonly float timeout;
 
         private readonly WaitStrategy waitStrategy;
+        private float startTime;
 
         private bool animationPlaying;
 
         private float currentTimeout;
         private int nextStateHash;
+
+        public override bool keepWaiting
+        {
+            get
+            {
+                if (!animationPlaying)
+                    return UpdateAnimationPlayingStatus();
+
+                if (waitStrategy == WaitStrategy.TillEndOfAnimationTime)
+                    return animator && animator.GetCurrentAnimatorStateInfo(layerIndex).normalizedTime < 1;
+
+                if (waitStrategy == WaitStrategy.TillEndOfTransition)
+                    return animator && animator.GetCurrentAnimatorStateInfo(layerIndex).shortNameHash == stateHash;
+
+                return animator && animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash == nextStateHash;
+            }
+        }
 
         public WaitForAnimation(Animator animator, SerializableAnimatorStateInfo serializedStateInfo,
             WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition, float timeout = 0) : this(animator,
@@ -51,20 +69,6 @@ namespace Bodardr.Utility.Runtime
             UpdateAnimationPlayingStatus();
         }
 
-        public override bool keepWaiting
-        {
-            get
-            {
-                if (!animationPlaying)
-                    return UpdateAnimationPlayingStatus();
-
-                if (waitStrategy == WaitStrategy.TillEndOfTransition)
-                    return animator && animator.GetCurrentAnimatorStateInfo(layerIndex).shortNameHash == stateHash;
-
-                return animator && animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash == nextStateHash;
-            }
-        }
-
         private bool UpdateAnimationPlayingStatus()
         {
             if (!animator)
@@ -76,6 +80,8 @@ namespace Bodardr.Utility.Runtime
 
                 if (waitStrategy == WaitStrategy.TillStartOfTransition)
                     nextStateHash = animator.GetNextAnimatorStateInfo(layerIndex).shortNameHash;
+                else if (waitStrategy == WaitStrategy.TillEndOfAnimationTime)
+                    startTime = Time.time;
                 return true;
             }
 
@@ -89,6 +95,7 @@ namespace Bodardr.Utility.Runtime
 
     public enum WaitStrategy
     {
+        TillEndOfAnimationTime,
         TillStartOfTransition,
         TillEndOfTransition
     }
