@@ -57,9 +57,14 @@ public static class MathUtility
         return new Vector3(x, 0, z);
     }
 
-    public static float GetJumpForce(float jumpHeight)
+    public static float GetJumpForce2D(float jumpHeight)
     {
         return Mathf.Sqrt(-2 * Physics2D.gravity.y * jumpHeight);
+    }
+
+    public static float GetJumpForce(float jumpHeight)
+    {
+        return Mathf.Sqrt(-2 * Physics.gravity.y * jumpHeight);
     }
 
     /// <summary>Rotates a vector along degrees.</summary>

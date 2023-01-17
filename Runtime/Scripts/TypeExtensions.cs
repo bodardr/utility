@@ -8,18 +8,18 @@ namespace Bodardr.Utility.Runtime
         {
             if (type == null)
                 return false;
-            
+
             return type.IsAbstract && type.IsSealed;
         }
-        
+
         /// <summary>
         /// Taken from : https://stackoverflow.com/questions/1749966/c-sharp-how-to-determine-whether-a-type-is-a-number
         /// </summary>
         /// <param name="o"></param>
         /// <returns>if it is a numeric type</returns>
-        public static bool IsNumericType(this object o)
-        {   
-            switch (Type.GetTypeCode(o.GetType()))
+        public static bool IsNumericType(this Type o)
+        {
+            switch (Type.GetTypeCode(o))
             {
                 case TypeCode.Byte:
                 case TypeCode.SByte:
