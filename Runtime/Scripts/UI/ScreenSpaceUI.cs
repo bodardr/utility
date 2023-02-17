@@ -1,15 +1,17 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 
 [AddComponentMenu("UI/Screen-Space UI")]
 public class ScreenSpaceUI : MonoBehaviour
 {
     private new Camera camera;
-
     private Canvas parentCanvas;
-
     private RectTransform rectTransform;
+
     private Vector3 screenPosition;
+
+    private bool isCulled;
 
     [SerializeField]
     private UpdateType updateType;
@@ -20,13 +22,38 @@ public class ScreenSpaceUI : MonoBehaviour
     [SerializeField]
     private Vector2 viewportOffset;
 
+    [SerializeField]
+    private UnityEvent onCulled;
+
+    [SerializeField]
+    private UnityEvent onUnculled;
+
     public Transform Target
     {
         get => target;
         set => target = value;
     }
 
+
     public Vector3 ScreenPosition => screenPosition;
+
+    public bool IsCulled
+    {
+        get => isCulled;
+        set
+        {
+            if (value == IsCulled)
+                return;
+            
+            isCulled = value;
+            
+            if(value)
+                onCulled.Invoke();
+            else
+                onUnculled.Invoke();
+        }
+    }
+
 
     private void Start()
     {
@@ -65,8 +92,14 @@ public class ScreenSpaceUI : MonoBehaviour
         if (!target)
             return;
 
+        var screenPoint = camera.WorldToScreenPoint(target.position);
+
+        IsCulled = screenPoint.z < 0 ||
+                     screenPoint.x < 0 || screenPoint.x > Screen.width ||
+                     screenPoint.y < 0 || screenPoint.y > Screen.height;
+
         RectTransformUtility.ScreenPointToWorldPointInRectangle(rectTransform,
-            camera.WorldToScreenPoint(target.position) + camera.ViewportToScreenPoint(viewportOffset),
+            screenPoint + camera.ViewportToScreenPoint(viewportOffset),
             parentCanvas.renderMode == RenderMode.ScreenSpaceCamera ? camera : null, out screenPosition);
 
         rectTransform.position = screenPosition;
