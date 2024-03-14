@@ -1,7 +1,8 @@
-﻿#if UNITY_EDITOR
-using Bodardr.Utility.Runtime;
-using UnityEditor;
+﻿using Bodardr.Utility.Runtime;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
 
 [ExecuteInEditMode]
 #endif

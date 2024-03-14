@@ -27,13 +27,13 @@ public static class PauseHandler
 
     private static void Pause()
     {
-        GameStateHandler.Invoke(GameState.PAUSE);
+        GameStateEvents.Invoke(GameState.PAUSE);
         Time.timeScale = 0;
     }
 
     private static void UnPause()
     {
-        GameStateHandler.Invoke(GameState.RESUME);
+        GameStateEvents.Invoke(GameState.RESUME);
         Time.timeScale = 1;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class GameStateHandler
+public static class GameStateEvents
 {
     public static event Action OnStart;
     public static event Action OnRestart;

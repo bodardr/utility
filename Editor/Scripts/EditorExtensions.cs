@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public static class EditorUtility
+public static class EditorExtensions
 {
     public static Vector2 MouseTo2DFlatPos(Vector2 mousePosition)
     {

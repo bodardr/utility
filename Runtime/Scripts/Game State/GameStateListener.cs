@@ -21,22 +21,22 @@ public class GameStateListener : MonoBehaviour
             switch (entry.state)
             {
                 case GameState.START:
-                    GameStateHandler.OnStart += entry.unityEvent.Invoke;
+                    GameStateEvents.OnStart += entry.unityEvent.Invoke;
                     break;
                 case GameState.RESTART:
-                    GameStateHandler.OnRestart += entry.unityEvent.Invoke;
+                    GameStateEvents.OnRestart += entry.unityEvent.Invoke;
                     break;
                 case GameState.PAUSE:
-                    GameStateHandler.OnPause += entry.unityEvent.Invoke;
+                    GameStateEvents.OnPause += entry.unityEvent.Invoke;
                     break;
                 case GameState.RESUME:
-                    GameStateHandler.OnResume += entry.unityEvent.Invoke;
+                    GameStateEvents.OnResume += entry.unityEvent.Invoke;
                     break;
                 case GameState.END:
-                    GameStateHandler.OnEnd += entry.unityEvent.Invoke;
+                    GameStateEvents.OnEnd += entry.unityEvent.Invoke;
                     break;
                 case GameState.GAMEOVER:
-                    GameStateHandler.OnGameOver += entry.unityEvent.Invoke;
+                    GameStateEvents.OnGameOver += entry.unityEvent.Invoke;
                     break;
             }
         }

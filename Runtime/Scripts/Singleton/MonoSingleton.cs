@@ -10,7 +10,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour, IMonoSingletonDestroyCal
     {
         get
         {
-            if (!instance)
+            if (instance == null)
                 instance = GetInstance();
 
             return instance;

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [AddComponentMenu("UI/Screen-Space UI")]
+[RequireComponent(typeof(RectTransform))]
 public class ScreenSpaceUI : MonoBehaviour
 {
     private new Camera camera;
@@ -54,6 +55,12 @@ public class ScreenSpaceUI : MonoBehaviour
         }
     }
 
+    public Vector2 ViewportOffset
+    {
+        get => viewportOffset;
+        set => viewportOffset = value;
+    }
+
 
     private void Start()
     {
@@ -85,28 +92,27 @@ public class ScreenSpaceUI : MonoBehaviour
 
         UpdatePosition();
     }
-
-
+    
     public void UpdatePosition()
     {
         if (!target)
             return;
-
+        
         var screenPoint = camera.WorldToScreenPoint(target.position);
-
-        IsCulled = screenPoint.z < 0 ||
-                     screenPoint.x < 0 || screenPoint.x > Screen.width ||
-                     screenPoint.y < 0 || screenPoint.y > Screen.height;
+        
+        UpdateCulling(screenPoint);
 
         RectTransformUtility.ScreenPointToWorldPointInRectangle(rectTransform,
-            screenPoint + camera.ViewportToScreenPoint(viewportOffset),
+            screenPoint + camera.ViewportToScreenPoint(ViewportOffset),
             parentCanvas.renderMode == RenderMode.ScreenSpaceCamera ? camera : null, out screenPosition);
 
         rectTransform.position = screenPosition;
     }
 
-    public void SetOffset(Vector2 newOffset)
+    private void UpdateCulling(Vector3 screenPoint)
     {
-        viewportOffset = newOffset;
+        IsCulled = screenPoint.z < 0 ||
+                   screenPoint.x < 0 || screenPoint.x > Screen.width ||
+                   screenPoint.y < 0 || screenPoint.y > Screen.height;
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Bodardr.Utility.Runtime
@@ -35,6 +37,22 @@ namespace Bodardr.Utility.Runtime
             gameObject.SetActive(false);
         }
 
+        public static void ChangeScene(string sceneName, Action loadCallback = null, float easeDuration = 1f)
+        {
+            Coroutiner.Instance.StartCoroutine(ChangeSceneCoroutine(sceneName, loadCallback, easeDuration));
+        }
+        
+        public static IEnumerator ChangeSceneCoroutine(string sceneName, Action loadCallback = null, float easeDuration = 1f)
+        {
+            yield return FadeOut(easeDuration);
+
+            yield return SceneManager.LoadSceneAsync(sceneName);
+            
+            loadCallback?.Invoke();
+            
+            yield return FadeIn(easeDuration);
+        }
+        
         public static IEnumerator FadeOut(float duration = 1)
         {
             Instance.gameObject.SetActive(true);

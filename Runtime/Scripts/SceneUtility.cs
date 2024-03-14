@@ -6,7 +6,7 @@ namespace Bodardr.Utility.Runtime
     {
         public void LoadScene(string sceneName)
         {
-            TransitionHandler.Instance.ChangeScene(sceneName);
+            TransitionCanvas.ChangeScene(sceneName);
         }
     }
 }

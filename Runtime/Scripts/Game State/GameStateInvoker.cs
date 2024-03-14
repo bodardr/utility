@@ -4,36 +4,36 @@ public class GameStateInvoker : MonoBehaviour
 {
     public void InvokeStart()
     {
-        GameStateHandler.Invoke(GameState.START);
+        GameStateEvents.Invoke(GameState.START);
     }
     
     public void InvokeRestart()
     {
-        GameStateHandler.Invoke(GameState.RESTART);
+        GameStateEvents.Invoke(GameState.RESTART);
     }
 
     public void InvokeResume()
     {
-        GameStateHandler.Invoke(GameState.RESUME);
+        GameStateEvents.Invoke(GameState.RESUME);
     }
 
     public void InvokePause()
     {
-        GameStateHandler.Invoke(GameState.PAUSE);
+        GameStateEvents.Invoke(GameState.PAUSE);
     }
 
     public void InvokeEnd()
     {
-        GameStateHandler.Invoke(GameState.END);
+        GameStateEvents.Invoke(GameState.END);
     }
 
     public void InvokeGameOver()
     {
-        GameStateHandler.Invoke(GameState.GAMEOVER);
+        GameStateEvents.Invoke(GameState.GAMEOVER);
     }
     
     public void Invoke(GameState state)
     {
-        GameStateHandler.Invoke(state);
+        GameStateEvents.Invoke(state);
     }
 }

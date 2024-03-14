@@ -12,7 +12,7 @@ namespace Bodardr.Utility.Runtime
         /// The stored IEnumerator function.
         /// Because of lazy evaluation, acts as a sort of pointer to the method.
         /// </summary>
-        private Func<IEnumerator> coroutine;
+        private readonly Func<IEnumerator> coroutine;
 
         /// <summary>
         /// The active, currently running coroutine.

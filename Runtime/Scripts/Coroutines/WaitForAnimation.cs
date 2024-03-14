@@ -35,6 +35,20 @@ namespace Bodardr.Utility.Runtime
             }
         }
 
+        public WaitForAnimation(Animator animator, int stateNameHash, int layerIndex,
+            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition,
+            float timeout = 0)
+        {
+            this.layerIndex = layerIndex;
+            this.animator = animator;
+            this.timeout = timeout;
+            this.waitStrategy = waitStrategy;
+
+            stateHash = stateNameHash;
+
+            UpdateAnimationPlayingStatus();
+        }
+
         public WaitForAnimation(Animator animator, SerializableAnimatorStateInfo serializedStateInfo,
             WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition, float timeout = 0) : this(animator,
             serializedStateInfo.StateNameHash, serializedStateInfo.LayerIndex, waitStrategy, timeout)
@@ -53,20 +67,6 @@ namespace Bodardr.Utility.Runtime
             Animator.StringToHash(stateName), layerIndex, waitStrategy,
             timeout)
         {
-        }
-
-        public WaitForAnimation(Animator animator, int stateNameHash, int layerIndex,
-            WaitStrategy waitStrategy = WaitStrategy.TillEndOfTransition,
-            float timeout = 0)
-        {
-            this.layerIndex = layerIndex;
-            this.animator = animator;
-            this.timeout = timeout;
-            this.waitStrategy = waitStrategy;
-
-            stateHash = stateNameHash;
-
-            UpdateAnimationPlayingStatus();
         }
 
         private bool UpdateAnimationPlayingStatus()
