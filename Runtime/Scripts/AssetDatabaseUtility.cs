@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
@@ -33,6 +34,31 @@ public class AssetDatabaseUtility
         }
 
         return output;
+    }
+    public static void CreateFolderIfNotExists(string folderPaths)
+    {
+        var folders = folderPaths.Split('/', '\\', StringSplitOptions.RemoveEmptyEntries);
+
+        if (folders.Length < 2)
+            throw new Exception("Folder paths must at least contain two elements. Something like \"Assets/MyScripts\"");
+        
+        for (int i = 1; i < folders.Length; i++)
+        {
+            StringBuilder str = new StringBuilder();
+
+            for (int j = 0; j < i; j++)
+            {
+                str.Append($"{folders[j]}/");
+            }
+
+            //Remove last '/'
+            str.Remove(str.Length - 1, 1);
+            
+            if (AssetDatabase.IsValidFolder(Path.Combine(str.ToString(),folders[i])))
+                continue;
+
+            AssetDatabase.CreateFolder(str.ToString(), folders[i]);
+        }
     }
 }
 #endif
