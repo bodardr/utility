@@ -1,5 +1,9 @@
 ﻿using UnityEditor;
 
+
+public namespace Bodardr.Utility.Editor
+{
+    
 public static class GameStateUtility
 {
     [MenuItem("Game State/Invoke Start")]
@@ -42,4 +46,5 @@ public static class GameStateUtility
     {
         GameStateEvents.Invoke(state);
     }
+}
 }

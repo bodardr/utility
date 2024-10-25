@@ -64,6 +64,8 @@ namespace Bodardr.Utility.Runtime
 
         public static IEnumerator FadeIn(float duration = 1)
         {
+            Instance;
+            
             yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 0,
                     duration)
                 .From(1).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();

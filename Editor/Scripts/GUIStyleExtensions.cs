@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Bodardr.Utility.Editor.Editor.Scripts
+namespace Bodardr.Utility.Editor
 {
     public static class GUIStyleExtensions
     {

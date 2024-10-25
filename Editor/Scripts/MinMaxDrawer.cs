@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace Bodardr.Utility.Editor.Editor.Scripts
+namespace Bodardr.Utility.Editor
 {
     [CustomPropertyDrawer(typeof(MinMaxAttribute), true)]
     public class MinMaxDrawer : PropertyDrawer
