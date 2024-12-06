@@ -4,41 +4,43 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-
-[CustomPropertyDrawer(typeof(ShowIfEnumAttribute))]
-public class ShowIfEnumDrawer : PropertyDrawer
+namespace Bodardr.Utility.Editor
 {
-    private bool show;
-
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(ShowIfEnumAttribute))]
+    public class ShowIfEnumDrawer : PropertyDrawer
     {
-        UpdateShow(property);
-        return show ? base.GetPropertyHeight(property, label) : 0f;
-    }
+        private bool show;
 
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        UpdateShow(property);
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            UpdateShow(property);
+            return show ? base.GetPropertyHeight(property, label) : 0f;
+        }
 
-        if (show)
-            EditorGUI.PropertyField(position, property, label);
-    }
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            UpdateShow(property);
 
-    public override VisualElement CreatePropertyGUI(SerializedProperty property)
-    {
-        UpdateShow(property);
-        return show ? new PropertyField(property) : base.CreatePropertyGUI(property);
-    }
+            if (show)
+                EditorGUI.PropertyField(position, property, label);
+        }
 
-    private void UpdateShow(SerializedProperty property)
-    {
-        var att = (ShowIfEnumAttribute)attribute;
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
+        {
+            UpdateShow(property);
+            return show ? new PropertyField(property) : base.CreatePropertyGUI(property);
+        }
 
-        var s = property.FindSiblingProperty(att.MemberName).enumValueIndex == att.EnumValue;
+        private void UpdateShow(SerializedProperty property)
+        {
+            var att = (ShowIfEnumAttribute)attribute;
 
-        if (att.Invert)
-            s = !s;
+            var s = property.FindSiblingProperty(att.MemberName).enumValueIndex == att.EnumValue;
 
-        show = s;
+            if (att.Invert)
+                s = !s;
+
+            show = s;
+        }
     }
 }

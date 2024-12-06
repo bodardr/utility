@@ -37,6 +37,15 @@ public static class MathUtility
         return !(min.x >= max.x || min.y >= max.y);
     }
 
+    public static Vector3 RandomInBounds(this Bounds bounds)
+    {
+        var min = bounds.min;
+        var max = bounds.max;
+        
+        return new Vector3(Random.Range(min.x, max.x), Random.Range(min.y, max.y),
+            Random.Range(min.z, max.z));
+    }
+
     public static float RandomValueWithinRange(this Vector2 range) => Random.Range(range.x, range.y);
     public static int RandomIntValueWithinRange(this Vector2 range) => Mathf.RoundToInt(Random.Range(range.x, range.y));
     public static float RandomValueWithinRange(this Vector2Int range) => Random.Range(range.x, range.y);

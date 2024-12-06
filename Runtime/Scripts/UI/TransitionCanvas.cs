@@ -41,36 +41,51 @@ namespace Bodardr.Utility.Runtime
         {
             Coroutiner.Instance.StartCoroutine(ChangeSceneCoroutine(sceneName, loadCallback, easeDuration));
         }
-        
-        public static IEnumerator ChangeSceneCoroutine(string sceneName, Action loadCallback = null, float easeDuration = 1f)
+
+        public static IEnumerator ChangeSceneCoroutine(string sceneName, Action loadCallback = null,
+            float easeDuration = 1f)
         {
-            yield return FadeOut(easeDuration);
+            yield return Instance.FadeOutCoroutine(easeDuration);
 
             yield return SceneManager.LoadSceneAsync(sceneName);
-            
+
             loadCallback?.Invoke();
-            
-            yield return FadeIn(easeDuration);
+
+            yield return Instance.FadeInCoroutine(easeDuration);
         }
-        
+
+        public static IEnumerator FadeIn(float duration = 1)
+        {
+            yield return Instance.FadeInCoroutine(duration);
+        }
+
         public static IEnumerator FadeOut(float duration = 1)
         {
-            Instance.gameObject.SetActive(true);
+            yield return Instance.FadeOutCoroutine(duration);
+        }
+
+        private IEnumerator FadeOutCoroutine(float duration = 1)
+        {
+            if (transitionImage == null)
+                Awake();
+            
+            gameObject.SetActive(true);
 
             yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 1,
                     duration)
                 .From(0).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
         }
 
-        public static IEnumerator FadeIn(float duration = 1)
+        private IEnumerator FadeInCoroutine(float duration = 1)
         {
-            Instance;
-            
+            if (transitionImage == null)
+                Awake();
+
             yield return DOTween.ToAlpha(() => transitionImage.color, value => transitionImage.color = value, 0,
                     duration)
                 .From(1).SetEase(Ease.InOutSine).SetUpdate(true).WaitForCompletion();
 
-            Instance.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }
